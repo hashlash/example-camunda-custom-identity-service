@@ -1,0 +1,47 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.4.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'org.springframework.boot'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.camunda.bpm:camunda-bom:7.7.0"
+        mavenBom "org.camunda.bpm.extension.springboot:camunda-bpm-spring-boot-starter-bom:2.1.2"
+    }
+}
+
+dependencies {
+
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-web')
+
+    compile('org.camunda.bpm.extension.springboot:camunda-bpm-spring-boot-starter-rest')
+    compile('org.camunda.bpm.extension.springboot:camunda-bpm-spring-boot-starter-webapp')
+
+    compile('org.camunda.bpm:camunda-engine')
+    compile('org.camunda.bpm:camunda-engine-spring')
+
+    runtime('mysql:mysql-connector-java')
+    compileOnly('org.projectlombok:lombok')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
