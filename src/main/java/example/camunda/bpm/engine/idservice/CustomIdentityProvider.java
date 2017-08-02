@@ -10,6 +10,8 @@ import org.camunda.bpm.engine.impl.interceptor.CommandContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,13 +59,28 @@ public class CustomIdentityProvider implements ReadOnlyIdentityProvider {
 
     public List<User> findUserByQueryCriteria(CustomUserQuery query) {
 
-        return userService.findAll().stream()
-                .filter(user -> user.getId().equals(query.getId()))
-                .filter(user -> user.getFirstName().equals(query.getFirstName()))
-                .filter(user -> user.getLastName().equals(query.getLastName()))
-                .filter(user -> user.getEmail().equals(query.getEmail()))
-                .filter(user -> user.getGroup().getId().equals(query.getGroupId()))
-                .collect(Collectors.toList());
+        Collection<example.camunda.domain.User> users = userService.findAll();
+
+        if(query.getId() != null)
+            users.removeIf(user -> !user.getId().equals(query.getId()));
+        if(query.getFirstName() != null)
+            users.removeIf(user -> !user.getFirstName().equals(query.getFirstName()));
+        if(query.getLastName() != null)
+            users.removeIf(user -> !user.getLastName().equals(query.getLastName()));
+        if(query.getEmail() != null)
+            users.removeIf(user -> !user.getEmail().equals(query.getEmail()));
+        if(query.getGroupId() != null)
+            users.removeIf(user -> !user.getGroup().getId().equals(query.getGroupId()));
+
+        return new ArrayList<>(users);
+
+//        return userService.findAll().stream()
+//                .filter(user -> user.getId().equals(query.getId()))
+//                .filter(user -> user.getFirstName().equals(query.getFirstName()))
+//                .filter(user -> user.getLastName().equals(query.getLastName()))
+//                .filter(user -> user.getEmail().equals(query.getEmail()))
+//                .filter(user -> user.getGroup().getId().equals(query.getGroupId()))
+//                .collect(Collectors.toList());
 
 //        return Collections.emptyList();
     }
